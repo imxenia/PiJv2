@@ -1,4 +1,4 @@
-package ru.vsu.cs.lyshova;
+package ru.vsu.cs.lyshova.servlets;
 
 import java.io.*;
 

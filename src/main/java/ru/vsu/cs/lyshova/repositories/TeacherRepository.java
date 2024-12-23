@@ -12,7 +12,6 @@ import java.util.List;
 public class TeacherRepository {
     private static TeacherRepository instance;
     public static final String TEACHER_TABLE = "teacher";
-
     public static final String TEACHER_ID = "teacher_id";
     public static final String TEACHER_NAME = "name";
     public static final String TEACHER_EXPERIENCE = "experience";
@@ -80,6 +79,23 @@ public class TeacherRepository {
             return null;
         }
     }
+
+    public Teacher createWithoutId(Teacher add) throws ClassNotFoundException {
+        Teacher agr = add;
+        String ins = "INSERT INTO " + TEACHER_TABLE + "(" + TEACHER_NAME + "," + TEACHER_EXPERIENCE + "," + TEACHER_DIRECTION + ")" + "VALUES(?,?,?)";
+        ConnectJDBC con = ConnectJDBC.getInstance();
+        try (PreparedStatement prSt = con.getDbConnection().prepareStatement(ins)) {
+            prSt.setString(1, agr.getName());
+            prSt.setInt(2, agr.getExperience());
+            prSt.setString(3, agr.getDirection());
+            prSt.executeUpdate();
+            return agr;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     public Teacher update(Teacher upd) throws ClassNotFoundException, SQLException {
         Teacher agr = upd;

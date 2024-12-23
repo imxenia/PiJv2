@@ -12,7 +12,6 @@ import java.util.List;
 public class GroupRepository {
     private static GroupRepository instance;
     public static final String GROUP_TABLE = "group";
-
     public static final String GROUP_ID = "group_id";
     public static final String GROUP_NUMBER = "number";
     public static final String GROUP_DIRECTION = "direction";
@@ -42,7 +41,7 @@ public class GroupRepository {
 
     public List<Group> getAll() {
 
-        String ins = "SELECT * FROM mydb." + GROUP_TABLE;
+        String ins = "SELECT * FROM mydb." + GROUP_TABLE + " ORDER BY " + GROUP_ID + " ASC";
         ConnectJDBC con = ConnectJDBC.getInstance();
         try (PreparedStatement prSt = con.getDbConnection().prepareStatement(ins)) {
             ResultSet res = prSt.executeQuery();
@@ -80,6 +79,23 @@ public class GroupRepository {
         }
     }
 
+    public Group createWithoutId(Group add) throws ClassNotFoundException {
+        Group agr = add;
+        String ins = "INSERT INTO mydb." + GROUP_TABLE + "(" + GROUP_NUMBER + "," + GROUP_DIRECTION + "," + GROUP_FORM_EDUCATION + ")" + "VALUES(?,?,?)";
+        ConnectJDBC con = ConnectJDBC.getInstance();
+        try (PreparedStatement prSt = con.getDbConnection().prepareStatement(ins)) {
+            prSt.setInt(1, agr.getNumber());
+            prSt.setString(2, agr.getDirection());
+            prSt.setString(3, agr.getFormEducation());
+            prSt.executeUpdate();
+            return agr;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
     public Group update(Group upd) throws ClassNotFoundException, SQLException {
         Group agr = upd;
         if (getById(agr) != null) {
@@ -115,6 +131,31 @@ public class GroupRepository {
         } else System.out.println("Nothing to delete.");
         return false;
     }
+
+//    public List<Group> getStudentsBySurname(String surname) throws ClassNotFoundException, SQLException {
+//        String ins = "SELECT * FROM " + GROUP_TABLE + " WHERE surname='" + surname + "' ORDER BY " + GROUP_ID + " ASC";
+//        System.out.println(ins);
+//
+//        ConnectJDBC con = ConnectJDBC.getInstance();
+//        try (PreparedStatement prSt = con.getDbConnection().prepareStatement(ins)) {
+//            ResultSet res = prSt.executeQuery();
+//            List<Group> students = new ArrayList<>();
+//            while (res.next()) {
+//                Group group = new Group();
+//                group.setId(res.getInt(1));
+//                group.setNumber(res.getInt(2));
+//                group.setDirection(res.getString(3));
+//                group.setFormEducation(res.getString(4));
+//                students.add(group);
+//                System.out.println(group.getNumber());
+//            }
+//            return students;
+//        } catch (SQLException | ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return null;
+//    }
 
     public static synchronized GroupRepository getInstance() {
         if (instance == null) instance = new GroupRepository();

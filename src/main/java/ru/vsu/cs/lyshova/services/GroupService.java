@@ -7,24 +7,35 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class GroupService {
-    public static boolean create(Group agr) throws ClassNotFoundException {
-        return GroupRepository.getInstance().create(agr) != null;
+    private static GroupService instance;
+    private static GroupRepository groupRepository = GroupRepository.getInstance();
+
+    public boolean create(Group agr) throws ClassNotFoundException {
+        return groupRepository.create(agr) != null;
     }
 
-    public static Group get(Group agr) throws SQLException, ClassNotFoundException {
-        return GroupRepository.getInstance().getById(agr);
+    public boolean createWithoutId(Group agr) throws ClassNotFoundException {
+        return groupRepository.createWithoutId(agr) != null;
     }
 
-    public static Group update(Group agr) throws ClassNotFoundException, SQLException {
-        return GroupRepository.getInstance().update(agr);
+    public Group get(Group agr) throws SQLException, ClassNotFoundException {
+        return groupRepository.getById(agr);
     }
 
-
-    public static boolean delete(Group agr) throws SQLException, ClassNotFoundException {
-        return GroupRepository.getInstance().delete(agr);
+    public Group update(Group agr) throws ClassNotFoundException, SQLException {
+        return groupRepository.update(agr);
     }
 
-    public static List<Group> getAll() {
-        return GroupRepository.getInstance().getAll();
+    public boolean delete(Group agr) throws SQLException, ClassNotFoundException {
+        return groupRepository.delete(agr);
+    }
+
+    public List<Group> getAll() {
+        return groupRepository.getAll();
+    }
+
+    public static synchronized GroupService getInstance() {
+        if (instance == null) instance = new GroupService();
+        return instance;
     }
 }
